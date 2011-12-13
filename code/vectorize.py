@@ -4,7 +4,8 @@ import os
 from collections import defaultdict
 
 # Arbitrary mapping from extensions we're interested in to numerical labels
-ALLOWED_EXTENSIONS = {'html':1, 'txt':2, 'pdf':3, 'jpg':4, 'ppt':5, 'doc':6}
+ALLOWED_EXTENSIONS = {'html':1, 'txt':2, 'gif':3, 'jpg':4, 'ppt':5, 'doc':6, 'pdf':7, 
+    'gz':8, 'doc':9, 'png':10, 'xml':11, 'xls':12}
 
 
 ##---------------------- Feature Calculators ----------------------------- ##
