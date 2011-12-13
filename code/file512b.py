@@ -2,6 +2,7 @@
 __author__ = 'Simran Fitzgerald'
 
 import os
+from optparse import OptionParser
 
 def fragmentFile(srcPath, trgPath, filename):
     """This function takes in a file (filename) and and breaks up the file into 512-byte blocks.  	The function will return a list containing the fragments.
@@ -19,7 +20,8 @@ def fragmentFile(srcPath, trgPath, filename):
     #output = open('outFile.out', 'ab')
 
     #The list that holds fragments
-    fragmentList = []
+    #fragmentList = []
+    num_fragments = 0
 
     #iterate through and store the 512 byte blocks in a list
     bytes = theFile.read(512)
@@ -29,10 +31,11 @@ def fragmentFile(srcPath, trgPath, filename):
         if bytes:
 	    while len(bytes) < 512:
 	        bytes += '\x00'
-            fragmentList.append(bytes)
+            #fragmentList.append(bytes)
+            num_fragments += 1
 	    output  = open(os.path.join(trgPath, '%s-%s.%s' % (filenameComponents[0], str(counter), filenameComponents[1])), 'ab')
             output.write(bytes)
-	    counter += 1
+            counter += 1
         else:
 
             break
@@ -43,8 +46,23 @@ def fragmentFile(srcPath, trgPath, filename):
     theFile.close()
     output.close()
    
-    print "Number of Fragments: " + str(len(fragmentList))
+    print "Number of Fragments: " + str(num_fragments)
     #print fragmentList
+    
+if __name__ == '__main__':
+    parser = OptionParser()
+    parser.add_option("-i", "--input-dir", dest="input_dir", default="../data/mini",
+        help="Directory containing the files to be fragmented (default ../data/001)")
+    parser.add_option("-o", "--output-dir", dest="output_dir", default="fragments",
+        help="Directory to write fragments to (default fragments)")
+    parser.add_option("-l", "--limit", dest="limit", default=None, type=int,
+	help="limit to number of files inspected")
+        
+    (options, args) = parser.parse_args()
+    for fname in os.listdir(options.input_dir)[:options.limit]:
+        fragmentFile(options.input_dir, options.output_dir, fname)
+    
+    
     
 
   

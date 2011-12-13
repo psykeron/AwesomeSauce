@@ -1,6 +1,10 @@
+# -*- coding: utf-8 -*-
 from optparse import OptionParser
 import os
 from collections import defaultdict
+
+# Arbitrary mapping from extensions we're interested in to numerical labels
+ALLOWED_EXTENSIONS = {'html':1, 'txt':2, 'pdf':3, 'jpg':4, 'ppt':5, 'doc':6}
 
 
 ##---------------------- Feature Calculators ----------------------------- ##
@@ -99,10 +103,13 @@ if __name__ == '__main__':
         fragment = f.read()
         f.close()
         
+        ext = fragment_name.lower().split('.')[-1]
+        if ext not in ALLOWED_EXTENSIONS:
+            continue
+        
         vector = sum([feature_calc(fragment, options.normalize) for feature_calc in features], [])
         
-        label = 1 if fragment_name.lower().endswith('.pdf') else -1
-        vector_str = to_vectorfile_format(label, vector)
+        vector_str = to_vectorfile_format(ALLOWED_EXTENSIONS[ext], vector)
         
         out.write(vector_str)
         
