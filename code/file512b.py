@@ -4,6 +4,8 @@ __author__ = 'Simran Fitzgerald'
 import os
 from optparse import OptionParser
 
+MAX_FRAGMENTS_PER_FILE = 100
+
 def fragmentFile(srcPath, trgPath, filename):
     """This function takes in a file (filename) and and breaks up the file into 512-byte blocks.  	The function will return a list containing the fragments.
     """
@@ -26,7 +28,7 @@ def fragmentFile(srcPath, trgPath, filename):
     #iterate through and store the 512 byte blocks in a list
     bytes = theFile.read(512)
     counter = 0
-    while True:
+    while counter < MAX_FRAGMENTS_PER_FILE:
 
         if bytes:
 	    while len(bytes) < 512:

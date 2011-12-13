@@ -94,12 +94,17 @@ if __name__ == '__main__':
     
     (options, args) = parser.parse_args()
     
-    features = [unigram_counts, contiguity, mean_byte_value, longest_streak]#,bigram_counts]
+    features = [unigram_counts, contiguity, mean_byte_value, longest_streak, bigram_counts]
     
     output_fname = os.path.join(options.output_dir, 'vector' + options.label + '.svm')
     out = open(output_fname, 'w')
     
+    fragments_seen = 0
+    
     for fragment_name in os.listdir(options.input_dir):
+        fragments_seen += 1
+        if (fragments_seen % 1000) == 0:
+            print "On %dth fragment" % (fragments_seen)
         f = open(os.path.join(options.input_dir, fragment_name))
         fragment = f.read()
         f.close()
