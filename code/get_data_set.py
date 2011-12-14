@@ -12,7 +12,7 @@ FILE_TYPES = ['bmp', 'csv', 'doc', 'docx', 'eps', 'gif', 'gz', 'html', 'jar', 'j
 #FILE_TYPES = ['ttf', 'zip', 'xbm']
 BASE_URL = 'https://domex.nps.edu/corp/files/govdocs1/'
 MIN_FILE_SIZE = 512 * 100
-MAX_FILE_SIZE = 512 * 500
+MAX_FILE_SIZE =  512 * 500
 FILE_LIMIT = 10
 
 regex = re.compile('\]\"></td><td><a href=\".*?\">(.*?)</a>\s*?</td><td align=\"right\">(.*?)\s*?</td><td align=\"right\">\s*?(.*?)<')
