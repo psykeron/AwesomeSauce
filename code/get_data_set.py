@@ -58,7 +58,7 @@ if __name__ == '__main__':
     
     FILE_LIMIT = options.file_limit
     
-    for i in range(5):
+    for i in range(1000):
         print 'Looking for files in %s' % (BASE_URL + '%.3i' % i)
         process_page(urllib.urlopen(BASE_URL + '%.3i' % i).read())
     
