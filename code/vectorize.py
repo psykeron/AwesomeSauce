@@ -2,6 +2,7 @@
 from optparse import OptionParser
 import os
 from collections import defaultdict
+import bz2
 
 # Arbitrary mapping from extensions we're interested in to numerical labels
 ALLOWED_EXTENSIONS = {'html':1, 'txt':2, 'gif':3, 'jpg':4, 'ppt':5, 'doc':6, 'pdf':7, 
@@ -10,31 +11,25 @@ ALLOWED_EXTENSIONS = {'html':1, 'txt':2, 'gif':3, 'jpg':4, 'ppt':5, 'doc':6, 'pd
 
 ##---------------------- Feature Calculators ----------------------------- ##
 
-# All the below functions take as input a file fragment, as a raw string, and
-# a boolean variable indicating whether to normalize results by length. They
+# All the below functions take as input a file fragment, as a raw string. They
 # return a list (in many cases of length one) describing some feature of the
 # file fragment.
 
-# Many functions have no way to sensibly normalize their results, but they
-# must take the second argument regardless, for consistency.
-
-def unigram_counts(fragment, normalize=False):
+def unigram_counts(fragment):
     counts = defaultdict(int)
     for byte in fragment:       
         counts[byte] += 1
         
-    return [ counts[chr(byte)]/(len(fragment)+0.0 if normalize else 1)
-        for byte in range(255)]
+    return [ counts[chr(byte)] for byte in range(255) ]
     
-def bigram_counts(fragment, normalize=False):
+def bigram_counts(fragment):
     counts = defaultdict(int)
     for i in range(len(fragment)-1):
         counts[fragment[i]+fragment[i+1]] += 1
         
-    return [counts[chr(b1)+chr(b2)]/(len(fragment)+0.0 if normalize else 1)
-        for b1 in range(255) for b2 in range(255)]
+    return [counts[chr(b1)+chr(b2)] for b1 in range(255) for b2 in range(255)]
         
-def contiguity(fragment, normalize):
+def contiguity(fragment):
     """ A vague measurement of the average contiguity from byte to byte.
     """
     total_diff = 0
@@ -45,11 +40,11 @@ def contiguity(fragment, normalize):
         
     return [total_diff/(total+0.0)]
     
-def mean_byte_value(fragment, normalize):
-    return [ sum([ord(char) for char in fragment]) / (len(fragment)+0.0) ]
+def mean_byte_value(fragment):
+    return [ sum([ord(char) for char in fragment]) ]
 
-def longest_streak(fragment, normalize):
-    """ The length of the longest repeating subsequence. Is normalized.
+def longest_streak(fragment):
+    """ The length of the longest repeating subsequence.
     """
     longest = 0
     last = fragment[0]
@@ -63,7 +58,13 @@ def longest_streak(fragment, normalize):
             last = char
             current_streak = 1
             
-    return [longest/(len(fragment)+0.0 if normalize else 1)]
+    return [longest]
+    
+def compressed_length(fragment, normalize):
+    """Return a feature vector with the ratio of the compressed length of the
+    file fragment to the actual length of the file fragment
+    """
+    return [ float( len(bz2.compress(fileFragment)) ) / float(len(fileFragment)) ]
 
 ## ----------------------------------------------------------------------- ##
 
@@ -89,12 +90,10 @@ if __name__ == '__main__':
         help="Directory to write vector file to (default ./vectors)")
     parser.add_option("-l", "--label", dest="label", default="",
         help="String to be added to the name of the output vector file")
-    parser.add_option("-n", "--norm", dest="normalize", action="store_true", default=False,
-        help="Whether or not to normalize measures by the length of the fragment.")
     
     (options, args) = parser.parse_args()
     
-    features = [unigram_counts, contiguity, mean_byte_value, longest_streak, bigram_counts]
+    features = [unigram_counts, contiguity, mean_byte_value, longest_streak,]# bigram_counts]
     
     output_fname = os.path.join(options.output_dir, 'vector' + options.label + '.svm')
     out = open(output_fname, 'w')
@@ -113,7 +112,7 @@ if __name__ == '__main__':
         if ext not in ALLOWED_EXTENSIONS:
             continue
         
-        vector = sum([feature_calc(fragment, options.normalize) for feature_calc in features], [])
+        vector = sum([feature_calc(fragment) for feature_calc in features], [])
         
         vector_str = to_vectorfile_format(ALLOWED_EXTENSIONS[ext], vector)
         
