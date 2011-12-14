@@ -3,6 +3,8 @@ from optparse import OptionParser
 import os
 from collections import defaultdict
 import bz2
+import stats
+import math
 
 # Arbitrary mapping from extensions we're interested in to numerical labels
 ALLOWED_EXTENSIONS = {'html':1, 'txt':2, 'gif':3, 'jpg':4, 'ppt':5, 'doc':6, 'pdf':7, 
@@ -60,11 +62,45 @@ def longest_streak(fragment):
             
     return [longest]
     
-def compressed_length(fragment, normalize):
+def compressed_length(fragment):
     """Return a feature vector with the ratio of the compressed length of the
     file fragment to the actual length of the file fragment
     """
     return [ float( len(bz2.compress(fileFragment)) ) / float(len(fileFragment)) ]
+    
+def entropy(fragment):
+    entropy = 0.0
+    bigram_frequencies = bigram_counts(fragment)
+    for i in range(len(bigram_frequencies)):
+        if bigram_frequencies[i] > 0.0:
+            entropy += bigram_frequencies[i] * math.log10(bigram_frequencies[i])
+    entropy = -entropy
+    
+    return [entropy]
+    
+def chi_squared(fragment):
+    chi_squared = 0.0
+    C2 = 0.0
+    expected = 2.0 #expected frequency of a byte (fileSize/number of possible byte values)->(512/256)
+    
+    for index in range(0,256):
+      observed = feature_vector_1grams[index]
+      C2 += ((observed-expected)**2)/expected
+    
+    chi_squared = stats.achisqprob(C2,255)
+    
+    return [chi_squared]
+    
+def hamming_weight(fragment):
+    hamming_weight = 0.0
+    for i in range(len(fileFragment)):
+    current_byte = ord(fileFragment[i])
+    while current_byte != 0:
+        hamming_weight += float(current_byte & 1)
+        current_byte = current_byte >> 1
+    hamming_weight /= float(8 * len(fileFragment))
+    
+    return [hamming_weight]
 
 ## ----------------------------------------------------------------------- ##
 
