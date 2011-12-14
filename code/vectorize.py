@@ -3,12 +3,16 @@ from optparse import OptionParser
 import os
 from collections import defaultdict
 import bz2
-import stats
+#import stats # Broken third-party dependency
 import math
 
+FILE_TYPES = ['bmp', 'csv', 'doc', 'docx', 'eps', 'gif', 'gz', 'html', 'jar', 'java', 'jpg', 'js', 'pdf', 'png', 'pps', 'ppt', 'pptx', 'ps', 'pub', 'sql', 'swf', 'txt', 'ttf', 'xbm', 'xls', 'xlsx', 'xml', 'zip']
+
+ALLOWED_EXTENSIONS = dict([ (ext, num) for (ext, num) in zip(FILE_TYPES, range(1,29))])
+
 # Arbitrary mapping from extensions we're interested in to numerical labels
-ALLOWED_EXTENSIONS = {'html':1, 'txt':2, 'gif':3, 'jpg':4, 'ppt':5, 'doc':6, 'pdf':7, 
-    'gz':8, 'doc':9, 'png':10, 'xml':11, 'xls':12}
+#ALLOWED_EXTENSIONS = {'html':1, 'txt':2, 'gif':3, 'jpg':4, 'ppt':5, 'doc':6, 'pdf':7, 
+#    'gz':8, 'doc':9, 'png':10, 'xml':11, 'xls':12}
 
 
 ##---------------------- Feature Calculators ----------------------------- ##
@@ -41,7 +45,7 @@ def contiguity(fragment):
         total += 1
         
     return [total_diff/(total+0.0)]
-    
+    ature_calc(fragment) 
 def mean_byte_value(fragment):
     return [ sum([ord(char) for char in fragment]) ]
 
@@ -66,7 +70,7 @@ def compressed_length(fragment):
     """Return a feature vector with the ratio of the compressed length of the
     file fragment to the actual length of the file fragment
     """
-    return [ float( len(bz2.compress(fileFragment)) ) / float(len(fileFragment)) ]
+    return [ float( len(bz2.compress(fragment)) ) / float(len(fragment)) ]
     
 def entropy(fragment):
     entropy = 0.0
@@ -84,8 +88,8 @@ def chi_squared(fragment):
     expected = 2.0 #expected frequency of a byte (fileSize/number of possible byte values)->(512/256)
     
     for index in range(0,256):
-      observed = feature_vector_1grams[index]
-      C2 += ((observed-expected)**2)/expected
+        observed = feature_vector_1grams[index]
+        C2 += ((observed-expected)**2)/expected
     
     chi_squared = stats.achisqprob(C2,255)
     
@@ -93,12 +97,12 @@ def chi_squared(fragment):
     
 def hamming_weight(fragment):
     hamming_weight = 0.0
-    for i in range(len(fileFragment)):
-    current_byte = ord(fileFragment[i])
+    for i in range(len(fragment)):
+        current_byte = ord(fragment[i])
     while current_byte != 0:
         hamming_weight += float(current_byte & 1)
         current_byte = current_byte >> 1
-    hamming_weight /= float(8 * len(fileFragment))
+    hamming_weight /= float(8 * len(fragment))
     
     return [hamming_weight]
 
@@ -129,7 +133,7 @@ if __name__ == '__main__':
     
     (options, args) = parser.parse_args()
     
-    features = [unigram_counts, contiguity, mean_byte_value, longest_streak,]# bigram_counts]
+    features = [unigram_counts, contiguity, mean_byte_value, longest_streak, compressed_length, entropy, hamming_weight,] #chi_squared,]# bigram_counts]
     
     output_fname = os.path.join(options.output_dir, 'vector' + options.label + '.svm')
     out = open(output_fname, 'w')
