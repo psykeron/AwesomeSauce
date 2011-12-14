@@ -9,6 +9,7 @@ import random
 
 #FILE_TYPES = ALLOWED_EXTENSIONS.keys()
 FILE_TYPES = ['bmp', 'csv', 'doc', 'docx', 'eps', 'gif', 'gz', 'html', 'jar', 'java', 'jpg', 'js', 'pdf', 'png', 'pps', 'ppt', 'pptx', 'ps', 'pub', 'sql', 'swf', 'txt', 'ttf', 'xbm', 'xls', 'xlsx', 'xml', 'zip']
+#FILE_TYPES = ['ttf', 'zip', 'xbm']
 BASE_URL = 'https://domex.nps.edu/corp/files/govdocs1/'
 MIN_FILE_SIZE = 512 * 100
 MAX_FILE_SIZE = 512 * 500
@@ -68,9 +69,6 @@ if __name__ == '__main__':
         print 'Looking for files in %s' % (BASE_URL + '%.3i' % i)
         process_page(urllib.urlopen(BASE_URL + '%.3i' % i).read())
     
-    for key in files.keys():
-        print 'Downloaded %i files of type %s' % (len(files[key]), key)
-    
     if not os.path.isdir(options.output_dir):
         os.mkdir(options.output_dir)
     
@@ -78,4 +76,6 @@ if __name__ == '__main__':
         for filename in files[key]:
             print 'Downloading %s' % os.path.join(BASE_URL, filename[0:3], filename)
             urllib.urlretrieve(os.path.join(BASE_URL, filename[0:3], filename), os.path.join(options.output_dir, filename))
-
+    
+    for key in files.keys():
+        print 'Downloaded %i files of type %s' % (len(files[key]), key)
