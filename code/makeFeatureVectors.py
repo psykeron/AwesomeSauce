@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import bz2
 import math
+import stats
 
 # return 1-grams feature vector from file fragment string
 def fileFragmetToFeatureVector1Grams(fileFragment):
@@ -38,6 +39,8 @@ def fileFragmetToFeatureVectorCompressedLength(fileFragment):
 
 # returns the feature vector used in the Conti paper [entropy, arithmetic mean, chi square, Hamming weight]
 def fileFragmentToFeatureVectorConti(fileFragment):
+    
+    #Entropy
     entropy = 0.0
     bigram_frequencies = fileFragmetToFeatureVector2Grams(fileFragment)
     for i in range(len(bigram_frequencies)):
@@ -45,14 +48,26 @@ def fileFragmentToFeatureVectorConti(fileFragment):
 	    entropy += bigram_frequencies[i] * math.log10(bigram_frequencies[i])
     entropy = -entropy
     
+    #Arithmetic Mean
     arithmetic_mean = 0.0
     unigram_frequencies = fileFragmetToFeatureVector1Grams(fileFragment)
     for i in range(len(unigram_frequencies)):
 	arithmetic_mean += float(i) * float(unigram_frequencies[i])
     
+    #Chi-Squared
     chi_squared = 0.0
-    # TODO
+    C2 = 0.0
+    expected = 2.0 #expected frequency of a byte (fileSize/number of possible byte values)->(512/256)
     
+    for index in range(0,256):
+      observed = feature_vector_1grams[index]
+      C2 += ((observed-expected)**2)/expected
+    
+    chi_squared = stats.achisqprob(C2,255)
+    
+    
+    
+    #Hamming-Weight
     hamming_weight = 0.0
     for i in range(len(fileFragment)):
 	current_byte = ord(fileFragment[i])
@@ -85,6 +100,7 @@ if __name__ == "__main__":
     for i in range(512):
 	t += "\xff"
     print fileFragmentToFeatureVector(s)
+    s.close()
 
 
 
