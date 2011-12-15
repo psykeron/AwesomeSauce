@@ -45,7 +45,7 @@ def contiguity(fragment):
         total += 1
         
     return [total_diff/(total+0.0)]
-    ature_calc(fragment) 
+
 def mean_byte_value(fragment):
     return [ sum([ord(char) for char in fragment]) ]
 
