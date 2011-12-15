@@ -14,15 +14,13 @@ def fragmentFile(srcPath, trgPath, filename):
     
     filenameComponents = filename.split('.')
     
-    if len(filenameComponents) != 2:
-        return
+    counter = 1
     
     #iterate through and store the 512 byte blocks in a list
     bytes = theFile.read(512)
     
     # omit first fragment
     bytes = theFile.read(512)
-    counter = 1
     while bytes:
         
         # omit last fragment (if it is not 512 bytes in size)
@@ -46,7 +44,7 @@ if __name__ == '__main__':
     parser.add_option("-o", "--output-dir", dest="output_dir", default="fragments",
         help="Directory to write fragments to (default fragments)")
     parser.add_option("-l", "--limit", dest="limit", default=None, type=int,
-	help="limit to number of files inspected")
+        help="limit to number of files inspected")
         
     (options, args) = parser.parse_args()
     
