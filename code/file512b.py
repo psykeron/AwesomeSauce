@@ -4,12 +4,11 @@ __author__ = 'Simran Fitzgerald'
 import os
 from optparse import OptionParser
 
-MAX_FRAGMENTS_PER_FILE = 100
-
 def fragmentFile(srcPath, trgPath, filename):
-    """This function takes in a file (filename) and and breaks up the file into 512-byte blocks.  	The function will return a list containing the fragments.
+    """This function takes in a file (filename) and and breaks up the file into 512-byte blocks.
+       The function will return a list containing the fragments.
     """
-
+    
     #Open the file for reading
     theFile = open(os.path.join(srcPath, filename),'rb')
     
@@ -18,38 +17,27 @@ def fragmentFile(srcPath, trgPath, filename):
     if len(filenameComponents) != 2:
         return
     
-    #Create the outputFile
-    #output = open('outFile.out', 'ab')
-
-    #The list that holds fragments
-    #fragmentList = []
-    num_fragments = 0
-
     #iterate through and store the 512 byte blocks in a list
     bytes = theFile.read(512)
-    counter = 0
-    while counter < MAX_FRAGMENTS_PER_FILE:
-
-        if bytes:
-	    while len(bytes) < 512:
-	        bytes += '\x00'
-            #fragmentList.append(bytes)
-            num_fragments += 1
-	    output  = open(os.path.join(trgPath, '%s-%s.%s' % (filenameComponents[0], str(counter), filenameComponents[1])), 'ab')
-            output.write(bytes)
-            counter += 1
-        else:
-
+    
+    # omit first fragment
+    bytes = theFile.read(512)
+    counter = 1
+    while bytes:
+        
+        # omit last fragment (if it is not 512 bytes in size)
+        if len(bytes) < 512:
             break
-
+        output = open(os.path.join(trgPath, '%s-%s.%s' % (filenameComponents[0], str(counter), filenameComponents[1])), 'ab')
+        output.write(bytes)
+        output.close()
+        counter += 1
         bytes = theFile.read(512)
-
+    
     #close the files
     theFile.close()
-    output.close()
    
-    print "Number of Fragments: " + str(num_fragments)
-    #print fragmentList
+    print "Number of Fragments: " + (str(counter - 1))
     
 if __name__ == '__main__':
     parser = OptionParser()
@@ -61,10 +49,10 @@ if __name__ == '__main__':
 	help="limit to number of files inspected")
         
     (options, args) = parser.parse_args()
+    
+    if not os.path.isdir(options.output_dir):
+        os.mkdir(options.output_dir)
+    
     for fname in os.listdir(options.input_dir)[:options.limit]:
         fragmentFile(options.input_dir, options.output_dir, fname)
     
-    
-    
-
-  
