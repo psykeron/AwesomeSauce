@@ -1,0 +1,13 @@
+SVM experimental procedure:
+
+1) Run vectorize.py. Should give a file of vectors in vectors/vectors{l}.svm.
+
+2) intelligent_partition.py on the resulting file of vectors. Gives test.svm train.svm
+
+3) svm-train train.svm model.svm
+3a) To use a radial kernel, do svm-train -t 2 [-g GAMMA] train.svm model.svm
+4) svm-predict test.svm model.svm output.svm
+5) confusion.py -p output.svm -t test.svm # Prints confusion matrix. Use -d "," and redirect to file for csv.
+
+NB: The default for svm-train is to use a linear kernel, which has not given good results for us in the past. easy.py uses a radial kernel, starting at something like C=32, gamma=0.01.
+We can use easy.py as a way to determine optimal C and gamma, though we cannot use accuracy figures from it in our results, because its cross-validation partitions the data naively (a problem we avoid using intelligent_partition.py).

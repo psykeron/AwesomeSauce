@@ -6,6 +6,7 @@ from optparse import OptionParser
 
 LABEL_LOOKUP = dict([ (num, ext) for (ext, num) in zip(FILE_TYPES, range(1,len(FILE_TYPES)+1))])
 
+#TODO: Include row and column totals
 def conf_matrix_str(conf, delim="\t"):
     """Given a doubly-indexed dict from integer labels to integer labels to integer counts,
     return a tabular string representation using the given delimiter.
