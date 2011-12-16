@@ -28,10 +28,17 @@ if __name__ == '__main__':
     # Mapping of file id to vectors
     id_to_frags = defaultdict(list)
     
-    for line in f:
-        vector, frag_id = line.split('#')
-        id_to_frags[frag_id.strip()].append(vector)
-    
+    #this try-except block is to help us see when the 'Memory Error' is occuring with respect to how many lines are read
+    counter=0
+    try:
+      for line in f:
+	  print counter
+	  counter += 1
+	  vector, frag_id = line.split('#')
+	  id_to_frags[frag_id.strip()].append(vector)
+    except:
+      print Exception
+	
     f.close()
     
     total_frags = sum( [len(id_to_frags[id_]) for id_ in id_to_frags] )
