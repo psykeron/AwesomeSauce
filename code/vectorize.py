@@ -135,7 +135,7 @@ def to_vectorfile_format(label, vector):
         vector_string += " " + str(feat_index) + ":" + str(value)
         feat_index += 1
         
-    return vector_string + '\n'
+    return vector_string
 
 if __name__ == '__main__':
     parser = OptionParser()
@@ -181,7 +181,7 @@ if __name__ == '__main__':
             # 352352-3.jpg
             frag_identifier = fragment_name.split('-')[0]
             
-            vector_str = to_vectorfile_format(ALLOWED_EXTENSIONS[ext], vector) + "#" + frag_identifier
+            vector_str = to_vectorfile_format(ALLOWED_EXTENSIONS[ext], vector) + "#" + frag_identifier + "\n"
             
             out.write(vector_str)
         

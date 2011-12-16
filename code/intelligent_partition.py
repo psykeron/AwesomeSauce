@@ -2,6 +2,7 @@
 
 from optparse import OptionParser
 import sys
+from collections import defaultdict
 
 
 if __name__ == '__main__':
