@@ -9,6 +9,8 @@ LABEL_LOOKUP = dict([ (num, ext) for (ext, num) in zip(FILE_TYPES, range(1,len(F
 def conf_matrix_str(conf, delim="\t"):
     """Given a doubly-indexed dict from integer labels to integer labels to integer counts,
     return a tabular string representation using the given delimiter.
+    
+    PROTIP: Set delim=',' to get a csv file
     """
     strrep = ''
     labels = ['X'] + [LABEL_LOOKUP[lab] for lab in conf.keys()]

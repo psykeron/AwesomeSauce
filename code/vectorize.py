@@ -3,7 +3,7 @@ from optparse import OptionParser
 import os
 from collections import defaultdict
 import bz2
-#import stats # Broken third-party dependency
+import random
 import math
 from get_data_set import FILE_TYPES
 
@@ -131,6 +131,8 @@ if __name__ == '__main__':
         help="Directory to write vector file to (default ./vectors)")
     parser.add_option("-l", "--label", dest="label", default="",
         help="String to be added to the name of the output vector file")
+    parser.add_option("-n", "--limit", dest="limit", type=int, default=0,
+        help="Limit to the number of fragments to take of each type. Default: 0=unlimited.")
     
     (options, args) = parser.parse_args()
     
@@ -141,26 +143,33 @@ if __name__ == '__main__':
     
     fragments_seen = 0
     
-    for fragment_name in os.listdir(options.input_dir):
-        fragments_seen += 1
-        if (fragments_seen % 1000) == 0:
-            print "On %dth fragment" % (fragments_seen)
-        f = open(os.path.join(options.input_dir, fragment_name))
-        fragment = f.read()
-        f.close()
-        
-        ext = fragment_name.lower().split('.')[-1]
-        if ext not in ALLOWED_EXTENSIONS:
-            continue
-        
-        vector = sum([feature_calc(fragment) for feature_calc in features], [])
-        
-        # 352352-3.jpg
-        frag_identifier = fragment_name.split('-')[0]
-        
-        vector_str = to_vectorfile_format(ALLOWED_EXTENSIONS[ext], vector) + "#" + frag_identifier
-        
-        out.write(vector_str)
+    #for fragment_name in os.listdir(options.input_dir):
+    #for (dirpath, dirnames, fnames) in os.walk(options.input_dir):
+    for subdir in os.listdir(options.input_dir):
+        fulldir = os.path.join(options.input_dir, subdir)
+        frags = os.listdir(fulldir)
+        # If we're only taking a subset of the fragments (when options.limit is set), we want to make sure it's a random one
+        random.shuffle(frags)
+        for fragment_name in (frags[:options.limit] if options.limit else frags):
+            fragments_seen += 1
+            if (fragments_seen % 1000) == 0:
+                print "On %dth fragment" % (fragments_seen)
+            f = open(os.path.join(fulldir, fragment_name))
+            fragment = f.read()
+            f.close()
+            
+            ext = fragment_name.lower().split('.')[-1]
+            if ext not in ALLOWED_EXTENSIONS:
+                continue
+            
+            vector = sum([feature_calc(fragment) for feature_calc in features], [])
+            
+            # 352352-3.jpg
+            frag_identifier = fragment_name.split('-')[0]
+            
+            vector_str = to_vectorfile_format(ALLOWED_EXTENSIONS[ext], vector) + "#" + frag_identifier
+            
+            out.write(vector_str)
         
     out.close()
         
