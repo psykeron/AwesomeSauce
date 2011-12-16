@@ -52,5 +52,10 @@ if __name__ == '__main__':
         os.mkdir(options.output_dir)
     
     for fname in os.listdir(options.input_dir)[:options.limit]:
-        fragmentFile(options.input_dir, options.output_dir, fname)
+        ext = fname.split('.')[-1].strip()
+        
+        if not os.path.isdir(options.output_dir + "/" + ext):
+            os.mkdir(options.output_dir + "/" + ext)
+            
+        fragmentFile(options.input_dir, options.output_dir + '/' + ext, fname)
     

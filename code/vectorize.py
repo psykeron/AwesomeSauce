@@ -3,7 +3,7 @@ from optparse import OptionParser
 import os
 from collections import defaultdict
 import bz2
-#import stats # Broken third-party dependency
+import random
 import math
 from get_data_set import FILE_TYPES
 
@@ -29,12 +29,26 @@ def unigram_counts(fragment):
         
     return [ counts[chr(byte)] for byte in range(255) ]
     
-def bigram_counts(fragment):
+def entropy_and_bigram_counts(fragment):
+    """Package together to avoid having to calculate this a second time when
+    calculating entropy.
+    """
     counts = defaultdict(int)
     for i in range(len(fragment)-1):
         counts[fragment[i]+fragment[i+1]] += 1
         
-    return [counts[chr(b1)+chr(b2)] for b1 in range(255) for b2 in range(255)]
+    bigram_frequencies = [counts[chr(b1)+chr(b2)] for b1 in range(255) for b2 in range(255)]
+    
+    entropy = 0.0
+    #bigram_frequencies = bigram_counts(fragment)
+    for i in range(len(bigram_frequencies)):
+        if bigram_frequencies[i] > 0.0:
+            entropy += bigram_frequencies[i] * math.log10(bigram_frequencies[i])
+    entropy = -entropy
+    
+    #return [entropy]
+    
+    return [entropy] + bigram_frequencies
         
 def contiguity(fragment):
     """ A vague measurement of the average contiguity from byte to byte.
@@ -46,7 +60,7 @@ def contiguity(fragment):
         total += 1
         
     return [total_diff/(total+0.0)]
-    ature_calc(fragment) 
+
 def mean_byte_value(fragment):
     return [ sum([ord(char) for char in fragment]) ]
 
@@ -131,36 +145,45 @@ if __name__ == '__main__':
         help="Directory to write vector file to (default ./vectors)")
     parser.add_option("-l", "--label", dest="label", default="",
         help="String to be added to the name of the output vector file")
+    parser.add_option("-n", "--limit", dest="limit", type=int, default=0,
+        help="Limit to the number of fragments to take of each type. Default: 0=unlimited.")
     
     (options, args) = parser.parse_args()
     
-    features = [unigram_counts, contiguity, mean_byte_value, longest_streak, compressed_length, entropy, hamming_weight,] #chi_squared,]# bigram_counts]
+    features = [unigram_counts, contiguity, mean_byte_value, longest_streak, compressed_length, hamming_weight, entropy_and_bigram_counts]
     
     output_fname = os.path.join(options.output_dir, 'vector' + options.label + '.svm')
     out = open(output_fname, 'w')
     
     fragments_seen = 0
     
-    for fragment_name in os.listdir(options.input_dir):
-        fragments_seen += 1
-        if (fragments_seen % 1000) == 0:
-            print "On %dth fragment" % (fragments_seen)
-        f = open(os.path.join(options.input_dir, fragment_name))
-        fragment = f.read()
-        f.close()
-        
-        ext = fragment_name.lower().split('.')[-1]
-        if ext not in ALLOWED_EXTENSIONS:
-            continue
-        
-        vector = sum([feature_calc(fragment) for feature_calc in features], [])
-        
-        # 352352-3.jpg
-        frag_identifier = fragment_name.split('-')[0]
-        
-        vector_str = to_vectorfile_format(ALLOWED_EXTENSIONS[ext], vector) + "#" + frag_identifier
-        
-        out.write(vector_str)
+    #for fragment_name in os.listdir(options.input_dir):
+    #for (dirpath, dirnames, fnames) in os.walk(options.input_dir):
+    for subdir in os.listdir(options.input_dir):
+        fulldir = os.path.join(options.input_dir, subdir)
+        frags = os.listdir(fulldir)
+        # If we're only taking a subset of the fragments (when options.limit is set), we want to make sure it's a random one
+        random.shuffle(frags)
+        for fragment_name in (frags[:options.limit] if options.limit else frags):
+            fragments_seen += 1
+            if (fragments_seen % 1000) == 0:
+                print "On %dth fragment" % (fragments_seen)
+            f = open(os.path.join(fulldir, fragment_name))
+            fragment = f.read()
+            f.close()
+            
+            ext = fragment_name.lower().split('.')[-1]
+            if ext not in ALLOWED_EXTENSIONS:
+                continue
+            
+            vector = sum([feature_calc(fragment) for feature_calc in features], [])
+            
+            # 352352-3.jpg
+            frag_identifier = fragment_name.split('-')[0]
+            
+            vector_str = to_vectorfile_format(ALLOWED_EXTENSIONS[ext], vector) + "#" + frag_identifier
+            
+            out.write(vector_str)
         
     out.close()
         
