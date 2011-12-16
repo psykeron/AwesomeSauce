@@ -1,0 +1,43 @@
+\documentclass[letter,11pt]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+
+%opening
+\title{Using NLP Techniques for File Fragment Classification}
+\author{Simran Fitzgerald, George Mathews, Colin Morris and Oles Zhulyn}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The classification of file fragments is an important problem in digital forensics. The literature does not include a lot of work that involves applying machine learning techniques to this problem. In this work, we explore the use of techniques from natural language processing to classify file fragments. We took a supervised learning approach, based on the use of support vector machines combined with the bag-of-words model, where text documents are represented as unordered bags of words. This technique has been repeatedly shown to be effective and robust in classifying text documents (e.g., in distinguishing positive movie reviews from negative ones).
+
+In our approach, we represent file fragments as ``bags of bytes'' with feature vectors consisting of unigram and bigram counts, as well as other statistical measurements (including entropy and others). We made use of the publicly available Garfinkel data corpus to generate file fragments for training and testing. We ran a series of experiments, and found that this approach is effective and robust in this domain as well.
+\end{abstract}
+
+\section{Introduction}
+TODO \cite{Conti10, Garfinkel09, Axelsson10, Calhoun08, Li10}
+
+\section{Related work}
+TODO
+
+\section{Experimental setup}
+TODO
+
+\section{Results}
+TODO
+
+\section{Conclusion and future work}
+TODO
+
+\section*{Acknowledgements}
+We are grateful to Greg Conti for his help.
+
+
+% References
+\newpage
+\bibliographystyle{plain}
+\bibliography{report}
+
+\end{document}
