@@ -5,51 +5,72 @@ import sys
 import random
 import shutil
 from optparse import OptionParser
+from get_data_set import FILE_TYPES
 
 #FILE_TYPES = ALLOWED_EXTENSIONS.keys()
-FILE_TYPES = ['bmp', 'csv', 'doc', 'docx', 'eps', 'gif', 'gz', 'html', 'jar', 'java', 'jpg', 'js', 'pdf', 'png', 'pps', 'ppt', 'pptx', 'ps', 'pub', 'sql', 'swf', 'txt', 'ttf', 'xbm', 'xls', 'xlsx', 'xml', 'zip']
+#FILE_TYPES = ['bmp', 'csv', 'doc', 'docx', 'eps', 'gif', 'gz', 'html', 'jar', 'java', 'jpg', 'js', 'pdf', 'png', 'pps', 'ppt', 'pptx', 'ps', 'pub', 'sql', 'swf', 'txt', 'ttf', 'xbm', 'xls', 'xlsx', 'xml', 'zip']
 
 FRAGMENT_LIMIT = 100
 
 fragment_files = {}
 
+#def process_file(filename):
+    #if not os.path.isfile(os.path.join(options.input_dir, filename)):
+        #return
+    #filename_components = filename.split('.')
+    #if len(filename_components) != 2:
+        #return
+    #file_type = filename_components[1]
+    #if not file_type in FILE_TYPES:
+        #return
+    #base_filename = filename_components[0].split('-')[0]
+    ##fragment_number = filename_components[0].split('-')[1]
+    #if not file_type in fragment_files:
+        #fragment_files[file_type] = { base_filename: [filename] }
+    #elif not base_filename in fragment_files[file_type]:
+        #fragment_files[file_type][base_filename] = [filename]
+    #else:
+        #fragment_files[file_type][base_filename].append(filename)
+    #return
+
+#def build_random_fragments_list():
+    #for file_type in fragment_files.keys():
+        #least_fragments = sys.maxint
+        #fragments = []
+        #for base_filename in fragment_files[file_type].keys():
+            #if len(fragment_files[file_type][base_filename]) < least_fragments:
+                #least_fragments = len(fragment_files[file_type][base_filename])
+        #for base_filename in fragment_files[file_type].keys():
+            #random.shuffle(fragment_files[file_type][base_filename])
+            #fragments = fragments + fragment_files[file_type][base_filename][0:least_fragments]
+        #random.shuffle(fragments)
+        #fragment_files[file_type] = fragments[0:FRAGMENT_LIMIT]
+    #return
+    
 def process_file(filename):
     if not os.path.isfile(os.path.join(options.input_dir, filename)):
         return
-    filename_components = filename.split('.')
-    if len(filename_components) != 2:
-        return
-    file_type = filename_components[1]
+    file_type = filename.split('.')[1]
     if not file_type in FILE_TYPES:
         return
-    base_filename = filename_components[0].split('-')[0]
-    #fragment_number = filename_components[0].split('-')[1]
     if not file_type in fragment_files:
-        fragment_files[file_type] = { base_filename: [filename] }
-    elif not base_filename in fragment_files[file_type]:
-        fragment_files[file_type][base_filename] = [filename]
+        fragment_files[file_type] = [filename]
     else:
-        fragment_files[file_type][base_filename].append(filename)
+        fragment_files[file_type].append(filename)
     return
 
 def build_random_fragments_list():
     for file_type in fragment_files.keys():
-        least_fragments = sys.maxint
-        fragments = []
-        for base_filename in fragment_files[file_type].keys():
-            if len(fragment_files[file_type][base_filename]) < least_fragments:
-                least_fragments = len(fragment_files[file_type][base_filename])
-        for base_filename in fragment_files[file_type].keys():
-            random.shuffle(fragment_files[file_type][base_filename])
-            fragments = fragments + fragment_files[file_type][base_filename][0:least_fragments]
-        random.shuffle(fragments)
-        fragment_files[file_type] = fragments[0:FRAGMENT_LIMIT]
+        random.shuffle(fragment_files[file_type])
+        fragment_files[file_type] = fragment_files[file_type][0:FRAGMENT_LIMIT]
+    return
 
 def output_fragments():
     for file_type in fragment_files.keys():
         for filename in fragment_files[file_type]:
             print 'Copying %s to %s' % (os.path.join(options.input_dir, filename), os.path.join(options.output_dir, filename))
             shutil.copy(os.path.join(options.input_dir, filename), os.path.join(options.output_dir, filename))
+    return
 
 if __name__ == '__main__':
     parser = OptionParser()

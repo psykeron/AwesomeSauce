@@ -5,10 +5,11 @@ from collections import defaultdict
 import bz2
 #import stats # Broken third-party dependency
 import math
+from get_data_set import FILE_TYPES
 
-FILE_TYPES = ['bmp', 'csv', 'doc', 'docx', 'eps', 'gif', 'gz', 'html', 'jar', 'java', 'jpg', 'js', 'pdf', 'png', 'pps', 'ppt', 'pptx', 'ps', 'pub', 'sql', 'swf', 'txt', 'ttf', 'xbm', 'xls', 'xlsx', 'xml', 'zip']
+#FILE_TYPES = ['bmp', 'csv', 'doc', 'docx', 'eps', 'gif', 'gz', 'html', 'jar', 'java', 'jpg', 'js', 'pdf', 'png', 'pps', 'ppt', 'pptx', 'ps', 'pub', 'sql', 'swf', 'txt', 'ttf', 'xbm', 'xls', 'xlsx', 'xml', 'zip']
 
-ALLOWED_EXTENSIONS = dict([ (ext, num) for (ext, num) in zip(FILE_TYPES, range(1,29))])
+ALLOWED_EXTENSIONS = dict([ (ext, num) for (ext, num) in zip(FILE_TYPES, range(1,len(FILE_TYPES)+1))])
 
 # Arbitrary mapping from extensions we're interested in to numerical labels
 #ALLOWED_EXTENSIONS = {'html':1, 'txt':2, 'gif':3, 'jpg':4, 'ppt':5, 'doc':6, 'pdf':7, 
@@ -154,7 +155,10 @@ if __name__ == '__main__':
         
         vector = sum([feature_calc(fragment) for feature_calc in features], [])
         
-        vector_str = to_vectorfile_format(ALLOWED_EXTENSIONS[ext], vector)
+        # 352352-3.jpg
+        frag_identifier = fragment_name.split('-')[0]
+        
+        vector_str = to_vectorfile_format(ALLOWED_EXTENSIONS[ext], vector) + "#" + frag_identifier
         
         out.write(vector_str)
         
