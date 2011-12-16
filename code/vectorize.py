@@ -29,12 +29,26 @@ def unigram_counts(fragment):
         
     return [ counts[chr(byte)] for byte in range(255) ]
     
-def bigram_counts(fragment):
+def entropy_and_bigram_counts(fragment):
+    """Package together to avoid having to calculate this a second time when
+    calculating entropy.
+    """
     counts = defaultdict(int)
     for i in range(len(fragment)-1):
         counts[fragment[i]+fragment[i+1]] += 1
         
-    return [counts[chr(b1)+chr(b2)] for b1 in range(255) for b2 in range(255)]
+    bigram_frequencies = [counts[chr(b1)+chr(b2)] for b1 in range(255) for b2 in range(255)]
+    
+    entropy = 0.0
+    #bigram_frequencies = bigram_counts(fragment)
+    for i in range(len(bigram_frequencies)):
+        if bigram_frequencies[i] > 0.0:
+            entropy += bigram_frequencies[i] * math.log10(bigram_frequencies[i])
+    entropy = -entropy
+    
+    #return [entropy]
+    
+    return [entropy] + bigram_frequencies
         
 def contiguity(fragment):
     """ A vague measurement of the average contiguity from byte to byte.
@@ -136,7 +150,7 @@ if __name__ == '__main__':
     
     (options, args) = parser.parse_args()
     
-    features = [unigram_counts, contiguity, mean_byte_value, longest_streak, compressed_length, entropy, hamming_weight,] #chi_squared,]# bigram_counts]
+    features = [unigram_counts, contiguity, mean_byte_value, longest_streak, compressed_length, hamming_weight, entropy_and_bigram_counts]
     
     output_fname = os.path.join(options.output_dir, 'vector' + options.label + '.svm')
     out = open(output_fname, 'w')
