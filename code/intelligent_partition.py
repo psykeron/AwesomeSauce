@@ -18,7 +18,7 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args()
     
     if len(args) < 1:
-        print 'Usage: %s [-r <ratio>] <vectors-filename>' % sys.args[0]
+        print 'Usage: %s [-r <ratio>] <vectors-filename>' % sys.argv[0]
         sys.exit(1)
     
     fname = args[0]
@@ -27,6 +27,8 @@ if __name__ == '__main__':
     
     # Mapping of file id to vectors
     id_to_frags = defaultdict(list)
+
+    # Note from Colin: Probably the reason this loop is causing OoM is that it requires putting the whole vector into memory. Fix idea: map, fragment ids to indices in the vector file, rather than a list of actual vectors. Then decide which ids are testing and training. Then iterate through vector file again, selectively copying to either the training or testing file.
     
     #this try-except block is to help us see when the 'Memory Error' is occuring with respect to how many lines are read
     counter=0
@@ -36,8 +38,8 @@ if __name__ == '__main__':
 	  counter += 1
 	  vector, frag_id = line.split('#')
 	  id_to_frags[frag_id.strip()].append(vector)
-    except:
-      print Exception
+    except Exception as e:
+      print e
 	
     f.close()
     
