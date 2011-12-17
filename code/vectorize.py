@@ -143,7 +143,7 @@ if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option("-i", "--input-dir", dest="input_dir", default="fragments",
         help="Directory containing the files to be processed (default ./fragments)")
-    parser.add_option("-o", "--output-dir", dest="output_dir", default="vectors",
+    parser.add_option("-o", "--output-dir", dest="output_dir", default="/h/90/oles/csc2208h/vectors",
         help="Directory to write vector file to (default ./vectors)")
     parser.add_option("-l", "--label", dest="label", default="",
         help="String to be added to the name of the output vector file")
