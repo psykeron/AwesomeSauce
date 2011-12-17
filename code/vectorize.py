@@ -132,7 +132,9 @@ def to_vectorfile_format(label, vector):
     vector_string = str(label)
     feat_index = 1 # Start from 1 rather than 0, oddly
     for value in vector:
-        vector_string += " " + str(feat_index) + ":" + str(value)
+        # Can save a ton of space by ignoring 0-valued features
+        if value != 0:
+            vector_string += " " + str(feat_index) + ":" + str(value)
         feat_index += 1
         
     return vector_string
