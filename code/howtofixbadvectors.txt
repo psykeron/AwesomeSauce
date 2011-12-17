@@ -1,0 +1,5 @@
+To fix a file produced by the old version of vectorize.py (where comments aren't separated from the end of the line by a space), run the following:
+
+sed 's/\(.*\)#\(.*\)$/\1 #\2/g' vector.svm > newvector.svm 
+
+Where vector.svm is the name of the vector file and newvector.svm is whatever you want the new file to be named. (sed -i makes the changes in place)
