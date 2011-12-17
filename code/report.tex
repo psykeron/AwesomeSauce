@@ -17,18 +17,28 @@ In our approach, we represent file fragments as ``bags of bytes'' with feature v
 \end{abstract}
 
 \section{Introduction}
-TODO \cite{Conti10, Garfinkel09, Axelsson10, Calhoun08, Li10}
+\label{Section:Introduction}
+The classification of file fragments is an important problem in digital forensics, particularly for the purpose of carving fragmented files. Files that are not stored contiguously on the hard drive must be carefully reconstructed from fragments based on their content during file carving. Because the search space for fragments belonging to a particular file is so large, it is essential to have an automated method for distinguishing whether a fragment potentially belongs to a file or not. For example, a fragment from a TXT file certainly does not belong to a JPEG file. Garfinkel \cite{Garfinkel07} observes that although the fragmentation of files is relatively rare on today's file systems, the files of interest in forensic investigations are more likely to be fragmented than other files. For example, large files that have been modified numerous times over a long period of time on a hard drive that is filled near capacity will likely exhibit fragmentation.
+
+
+
+
+The paper is organized as follows. In Section \ref{Section:RelatedWork}, we provide a brief overview of related work done in this area. In Section \ref{Section:ExperimentalSetup}, we describe our experimental setup, which includes how we generated the data set we used in training and testing. In Section \ref{Section:Results}, we present our results. We conclude and suggest future directions for this work in Section \ref{Section:ConclusionAndFutureWork}.
 
 \section{Related work}
-TODO
+\label{Section:RelatedWork}
+TODO \cite{Conti10, Garfinkel09, Axelsson10, Calhoun08, Li10}
 
 \section{Experimental setup}
+\label{Section:ExperimentalSetup}
 TODO
 
 \section{Results}
+\label{Section:Results}
 TODO
 
 \section{Conclusion and future work}
+\label{Section:ConclusionAndFutureWork}
 TODO
 
 \section*{Acknowledgements}
