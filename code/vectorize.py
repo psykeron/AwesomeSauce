@@ -183,7 +183,7 @@ if __name__ == '__main__':
             # 352352-3.jpg
             frag_identifier = fragment_name.split('-')[0]
             
-            vector_str = to_vectorfile_format(ALLOWED_EXTENSIONS[ext], vector) + "#" + frag_identifier + "\n"
+            vector_str = to_vectorfile_format(ALLOWED_EXTENSIONS[ext], vector) + " #" + frag_identifier + "\n"
             
             out.write(vector_str)
         
