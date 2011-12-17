@@ -43,57 +43,39 @@ if __name__ == '__main__':
     f = open(fname, 'r')
     
     # Mapping of file id to vectors
-    id_to_frags = defaultdict(list)
+    id_to_nfrags = defaultdict(int)
 
-    # Note from Colin: Probably the reason this loop is causing OoM is that it requires putting the whole vector into memory. Fix idea: map, fragment ids to indices in the vector file, rather than a list of actual vectors. Then decide which ids are testing and training. Then iterate through vector file again, selectively copying to either the training or testing file.
+    for line in f:
+        frag_id = line.split('#')[1].strip()
+        id_to_nfrags[frag_id] += 1
     
-    #this try-except block is to help us see when the 'Memory Error' is occuring with respect to how many lines are read
-    input_file_index=0
-    try:
-      for line in f:
-	  
-	  if (input_file_index % 1000) == 0:
-	      
-	      print "Currently on line " + str(input_file_index) + " of input file."
-	  
-	  #mapping frag ids to index in input vector file (as per colin's fix idea from above)
-	  frag_id = line.split('#')[1].strip()
-	  id_to_frags[frag_id].append(input_file_index)
-	  input_file_index += 1
-	  
-    except Exception as e:
-      print e
-	
     #remember to close that shit!	
-    f.close()
+    #f.close()
     
-    total_frags = sum([len(id_to_frags[id_]) for id_ in id_to_frags] )
+    total_frags = sum(id_to_nfrags.values() )
     ntest_frags = int(options.test_data_ratio*total_frags)
+    
+    test_ids = set([])
+    for id_ in id_to_nfrags:
+        test_ids.add(id_)
+        ntest_frags -= id_to_nfrags[id_]
+        if ntest_frags <= 0:
+            break
+            
+    print "Picked %d files to use in test file" % (len(test_ids))
     
     test_f = open(options.test_fname, 'w')
     train_f = open(options.train_fname, 'w')
     
-    #build line offset list!
-    line_offset_list  = build_offset_list(fname)
-    
-    #open original input vector file again
-    f2 = open(fname)
-    
-    #write to output--train and test svm files
-    for id_ in id_to_frags:
-        if ntest_frags <= 1:
-            for vector_index in id_to_frags[id_]:
-		#using the line_offset_list, we can f2.seek(byte) by line!
-		f2.seek(line_offset_list[vector_index])
-		
-                test_f.write(f2.readline())# +'\n') -- I don't think we need this...?
-                ntest_frags -= 1
+    f.seek(0)
+    for line in f:
+        frag_id = line.split('#')[1].strip()
+        if frag_id in test_ids:
+            test_f.write(line)
         else:
-            for vector_index in id_to_frags[id_]:
-		f2.seek(line_offset_list[vector_index])
-                train_f.write(f2.readline())#+'\n') -- I dont think we need this...?
+            train_f.write(line)
+    
         
     #close files!    
     test_f.close()
     train_f.close()
-    f2.close()
