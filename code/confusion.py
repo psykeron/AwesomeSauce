@@ -7,7 +7,6 @@ from optparse import OptionParser
 
 LABEL_LOOKUP = dict([ (num, ext) for (ext, num) in zip(FILE_TYPES, range(1,len(FILE_TYPES)+1))])
 
-#TODO: Include row and column totals
 def conf_matrix_str(conf, delim="\t"):
     """Given a doubly-indexed dict from integer labels to integer labels to integer counts,
     return a tabular string representation using the given delimiter.
@@ -33,11 +32,11 @@ def conf_matrix_str(conf, delim="\t"):
         total_total += total # Readibility++
             
         class_acc = true_pos / (total + 0.0)
-        strrep += str(class_acc) + delim
+        strrep += "%.3f%s" % (class_acc, delim)
         strrep += '\n'
         
     total_acc = total_true / (total_total + 0.0)
-    strrep += 'Total accuracy:' + delim + str(total_acc)
+    strrep += 'Total_accuracy%s%.3f' % (delim, total_acc)
         
     return strrep
     
