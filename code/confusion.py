@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 from collections import defaultdict
@@ -6,7 +7,6 @@ from optparse import OptionParser
 
 LABEL_LOOKUP = dict([ (num, ext) for (ext, num) in zip(FILE_TYPES, range(1,len(FILE_TYPES)+1))])
 
-#TODO: Include row and column totals
 def conf_matrix_str(conf, delim="\t"):
     """Given a doubly-indexed dict from integer labels to integer labels to integer counts,
     return a tabular string representation using the given delimiter.
@@ -14,13 +14,29 @@ def conf_matrix_str(conf, delim="\t"):
     PROTIP: Set delim=',' to get a csv file
     """
     strrep = ''
-    labels = ['X'] + [LABEL_LOOKUP[lab] for lab in conf.keys()]
+    labels = ['X'] + [LABEL_LOOKUP[lab] for lab in conf.keys()] + ['Class accuracy']
     strrep += delim.join(labels) + '\n'
+    total_true = 0
+    total_total = 0
     for l1 in conf:
+        true_pos = 0
+        total = 0
         strrep += LABEL_LOOKUP[l1] + delim
         for l2 in conf:
+            if l1 == l2:
+                true_pos += conf[l1][l2]
+            total += conf[l1][l2]
             strrep += str(conf[l1][l2]) + delim
+            
+        total_true += true_pos
+        total_total += total # Readibility++
+            
+        class_acc = true_pos / (total + 0.0)
+        strrep += "%.3f%s" % (class_acc, delim)
         strrep += '\n'
+        
+    total_acc = total_true / (total_total + 0.0)
+    strrep += 'Total_accuracy%s%.3f' % (delim, total_acc)
         
     return strrep
     
