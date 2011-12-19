@@ -8,6 +8,7 @@ import os
 import random
 import sys
 import copy
+import math
 
 #FILE_TYPES = ALLOWED_EXTENSIONS.keys()
 #FILE_TYPES = ['bmp', 'csv', 'doc', 'docx', 'eps', 'gif', 'gz', 'html', 'jar', 'java', 'jpg', 'js', 'pdf', 'png', 'pps', 'ppt', 'pptx', 'ps', 'pub', 'sql', 'swf', 'txt', 'ttf', 'xbm', 'xls', 'xlsx', 'xml', 'zip']
@@ -106,6 +107,16 @@ def data_on_files(min_fragments=0, max_fragments=sys.maxint, only_allowed_file_t
             continue
         print '%s\t\t%i\t\t%i' % (file_type, total_files, num_fragments)
 
+def total_fragments_for_each_file_type():
+    print 'File type\t# files\t\t# fragments'
+    for file_type in sorted(files.keys()):
+        total_fragments = 0.0
+        total_files = 0
+        for a_file in files[file_type]:
+            total_fragments += int(math.ceil(a_file[1]/512.0))
+            total_files += 1
+        print '%s\t\t%i\t\t%i' % (file_type, total_files, total_fragments)
+
 def get_file_size(size):
     size = size.strip()
     if size[-1] == 'K':
@@ -165,6 +176,9 @@ if __name__ == '__main__':
     FILE_LIMIT = options.file_limit
     
     get_files_list()
+    
+    #total_fragments_for_each_file_type()
+    #exit(0)
     
     #data_on_files(min_fragments=0, only_allowed_file_types=False)
     data_on_files(min_fragments=10000, only_allowed_file_types=True)
