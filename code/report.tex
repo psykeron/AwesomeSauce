@@ -65,7 +65,7 @@ During the training phase, a support vector machine partitions a high-dimensiona
 
 There are 256 features which are the histogram of the byte values (i.e. the unigram counts) for the file fragment. The feature vectors in the work by Li et al. \cite{Li10} consist only of the unigram counts. Another $256^2$ features in our work are the histogram of the pairs of consecutive byte values (i.e. the bigram counts) for the file fragment.
 
-We also have features for various statistical measurements. We have the Shannon entropy \cite{Shannon48} of the bigram counts. Conti et al. \cite{Conti10} considered the Shannon entropy of the unigram, bigram, and trigram counts, and found that the entropy of the bigram counts was effective for classifying file fragments. We made use of the Hamming weight (the total number of ones divided by the total number of bits in the file fragment) and the mean byte value features that appear in the paper by Conti et al. We also used the compressed length of the file fragment as a feature. We did this to approximate the algorithmic or Kolmogorov complexity of the file fragment, following Veenman \cite{Veenman07}. We compressed each file fragment with the \texttt{bzip2} algorithm \cite{Seward01}. We also used two features from natural language processing. We computed the average contiguity between bytes for each file fragment, which is defined as follows: \\
+We also have features for various statistical measurements. We have the Shannon entropy \cite{Shannon48} of the bigram counts. Conti et al. \cite{Conti10} considered the Shannon entropy of the unigram, bigram, and trigram counts, and found that the entropy of the bigram counts was effective for classifying file fragments. We made use of the Hamming weight (the total number of ones divided by the total number of bits in the file fragment) and the mean byte value features that appear in the paper by Conti et al. We also used the compressed length of the file fragment as a feature. We did this to approximate the algorithmic or Kolmogorov complexity of the file fragment, following Veenman \cite{Veenman07}. We compressed each file fragment with the \texttt{bzip2} algorithm \cite{Seward01}. We also used two features from natural language processing. We computed the average contiguity between bytes (i.e. the average distance between consecutive bytes) for each file fragment, which is defined as follows: \\
 
 $\sum_{i=0}^{n=510}\frac{|fragment[i] - fragment[i+1]|}{511}$ \\
 
@@ -73,10 +73,6 @@ $\sum_{i=0}^{n=510}\frac{|fragment[i] - fragment[i+1]|}{511}$ \\
 
 \subsection{Experiments}
 \label{Subsection:Experiments}
-
-  
-
-
 
 %After finalizing our data set, we split up our experiment based on how many fragments of each file type will be used to test and train the SVM. This is done in order for us to be able to asses the value of using more fragments of a given file type versus using less fragments. We divided our experiment into 1000 fragments of each type, 2000, 4000, and finally 8000; obviously, the SVM training phase time increases as the amount of fragments being employed increases. If the prediction rate of using less fragments versus using considerably more fragments is negligible, then in most cases, it will suffice to use less fragments for the SVM training phase, if time is a concern.
 
