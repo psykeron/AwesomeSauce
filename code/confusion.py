@@ -45,11 +45,11 @@ def conf_matrix_str(conf, delim="\t"):
 if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option("-p", "--predictions", dest="predictions", default="output.svm",
-        help="File containing the SVM's predictions")
+        help="File containing the SVM's predictions (default: output.svm)")
     parser.add_option("-t", "--true", dest="true", default="test.svm",
-        help="File of test vectors, containing the true labels")
+        help="File of test vectors, containing the true labels (default: test.svm)")
     parser.add_option("-d", "--delim", dest="delim", default="\t",
-        help="String to use as delimiter for tabular output")
+        help="String to use as delimiter for tabular output (default:tab)")
        
     
     (options, args) = parser.parse_args()
