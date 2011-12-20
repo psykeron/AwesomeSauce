@@ -37,7 +37,7 @@ The paper is organized as follows. In Section \ref{Section:RelatedWork}, we prov
 \label{Section:RelatedWork}
 Previous work that explores the application of machine learning techniques to the problem of file fragment classification appears in the literature.
 
-Calhoun and Coles \cite{Calhoun08} considered only four file types (namely, \texttt{jpg}, \texttt{bmp}, \texttt{gif}, and \texttt{pdf}). For each pair of these file types, they used linear discriminant analysis \cite{Fisher36} (which is used to find linear combinations of features to characterize or separate objects between classes) in order to classify a file fragment as having one type or the other. The features they considered were various statistical measurements, including Shannon entropy and frequency of ASCII codes. They achieved fairly good accuracy (88.3\%). However, since they only classified fragments based on only four file types on a pairwise basis, it is not clear how well this technique would generalize to a real-world application, where a given file fragment is not known to belong to a file of only two possible types.
+Calhoun and Coles \cite{Calhoun08} considered only four file types (namely, \texttt{jpg}, \texttt{bmp}, \texttt{gif}, and \texttt{pdf}). For each pair of these file types, they used linear discriminant analysis \cite{Fisher36} (which is used to find linear combinations of features to characterize or separate objects between classes) in order to classify a file fragment as having one type or the other. The features they considered were various statistical measurements, including Shannon entropy \cite{Shannon48} and frequency of ASCII codes. They achieved fairly good accuracy (88.3\%). However, since they only classified fragments based on only four file types on a pairwise basis, it is not clear how well this technique would generalize to a real-world application, where a given file fragment is not known to belong to a file of only two possible types.
 
 Axelsson \cite{Axelsson10} considered 28 different file types and applied the k-nearest-neighbors classification technique with nearest compression distance as the distance metric between file fragments. The file fragment data was generated from the freely available \texttt{govdocs1} corpus by Garfinkel et al. \cite{Garfinkel09}. Axelsson's experiments consisted of ten trials. In each trial, 10 files were selected at random (with the types of the files uniformly distributed) and 14 512-byte fragments were extracted at random from each of them. The fragments were then classified against a data set of approximately 3000 file fragments with known types. The average classification accuracy was around 34\%, with higher accuracy being achieved for file fragments with lower entropy.
 
@@ -51,11 +51,38 @@ Li et al. \cite{Li10} used a support vector machine with feature vectors based o
 
 \section{Experimental setup}
 \label{Section:ExperimentalSetup}
+
+\subsection{Data Set}
+\label{Subsection:DataSet}
+
 The data set we used for training and testing is derived from the freely available corpus of forensics research data by Garfinkel et al. \cite{Garfinkel09} (the \texttt{govdocs1} data set described in Section 4 of the cited paper). We determined the most well-represented file types in the data set and selected 23 of them based on how well-known they are to us. The first of these criteria ensured that we acquired a good variety of file fragment data for each file type. The second of these criteria is not a rigorous one. Although we aimed to get a good representation of file types that are likely to be of forensic interest, a rigorous methodology for selecting the most appropriate file types is outside the scope of this paper. Nevertheless, most of the file types we selected overlap with the ones selected by Axelsson \cite{Axelsson10} who made use of the same Garfinkel corpus to derive his data set.
 
 After selecting the file types, we proceeded to download files uniformly at random from the \texttt{govdocs1} corpus such that we would have at least 10 files made up of at least 10000 512-byte fragments for each of the 23 file types. Because the files in the \texttt{govdocs1} corpus are of variable length, and files from different file types are not equally represented, it was necessary to download more than 10 files or files consisting of more than 10000 fragments, for each of the file types, in order to meet both criteria. From this, we uniformly at random selected 9000 fragments for each file type to create our data set. When generating the fragments, we omitted the first and last fragments of each file, as the first fragment frequently contains header information that identifies the file type, and the last fragment might not be 512 bytes in length. Calhoun and Coles \cite{Calhoun08}, Conti et al. \cite{Conti10}, and Li et al. \cite{Li10} omit these fragments as well. This approach enabled us to generate a large data set of file fragments with an equal number of file fragments for each file type, and with each fragment being derived from a variety of files with the same type.
 
-\textbf{TODO finish this!!!!!!}
+\subsection{Feature Vectors}
+\label{Subsection:FeatureVectors}
+During the training phase, a support vector machine partitions a high-dimensional space based on data points with known classes, with each partition corresponding to a class. In order to train a support vector machine on the file fragment data, it is necessary to represent each file fragment as a point in a high-dimensional space. We do this by transforming each file fragment into a vector of features. The features we used are described here.
+
+There are 256 features which are the histogram of the byte values (i.e. the unigram counts) for the file fragment. The feature vectors in the work by Li et al. \cite{Li10} consist only of the unigram counts. Another $256^2$ features in our work are the histogram of the pairs of consecutive byte values (i.e. the bigram counts) for the file fragment.
+
+We also have features for various statistical measurements. We have the Shannon entropy \cite{Shannon48} of the bigram counts. Conti et al. \cite{Conti10} considered the Shannon entropy of the unigram, bigram, and trigram counts, and found that the entropy of the bigram counts was effective for classifying file fragments. We made use of the Hamming weight (the total number of ones divided by the total number of bits in the file fragment) and the mean byte value features that appear in the paper by Conti et al. We also used the compressed length of the file fragment as a feature. We did this to approximate the algorithmic or Kolmogorov complexity of the file fragment, following Veenman \cite{Veenman07}. We compressed each file fragment with the \texttt{bzip2} algorithm \cite{Seward01}. We also used two features from natural language processing. We computed the average contiguity between bytes for each file fragment, which is defined as follows: \\
+
+$\sum_{i=0}^{n=510}\frac{|fragment[i] - fragment[i+1]|}{511}$ \\
+
+{\noindent}where $fragment[i]$ is the $i^\textrm{\small th}$ byte of the file fragment. Last of all, we calculated the longest contiguous streak of repeating bytes for each file fragment.
+
+\subsection{Experiments}
+\label{Subsection:Experiments}
+
+  
+
+
+
+%After finalizing our data set, we split up our experiment based on how many fragments of each file type will be used to test and train the SVM. This is done in order for us to be able to asses the value of using more fragments of a given file type versus using less fragments. We divided our experiment into 1000 fragments of each type, 2000, 4000, and finally 8000; obviously, the SVM training phase time increases as the amount of fragments being employed increases. If the prediction rate of using less fragments versus using considerably more fragments is negligible, then in most cases, it will suffice to use less fragments for the SVM training phase, if time is a concern.
+
+
+
+
 
 \section{Results}
 \label{Section:Results}
