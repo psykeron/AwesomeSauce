@@ -10,10 +10,9 @@ import sys
 import copy
 import math
 
-#FILE_TYPES = ALLOWED_EXTENSIONS.keys()
-#FILE_TYPES = ['bmp', 'csv', 'doc', 'docx', 'eps', 'gif', 'gz', 'html', 'jar', 'java', 'jpg', 'js', 'pdf', 'png', 'pps', 'ppt', 'pptx', 'ps', 'pub', 'sql', 'swf', 'txt', 'ttf', 'xbm', 'xls', 'xlsx', 'xml', 'zip']
-FILE_TYPES = ['pdf', 'html', 'jpg', 'doc', 'txt', 'xls', 'ppt', 'gif', 'xml', 'ps', 'csv', 'gz', 'png', 'swf', 'pps', 'rtf', 'sql', 'java', 'pptx', 'docx', 'tex', 'bmp', 'xlsx', 'zip',]
-#FILE_TYPES = ['ttf', 'zip', 'xbm']
+# NB: removed ps
+FILE_TYPES = ['pdf', 'html', 'jpg', 'doc', 'txt', 'xls', 'ppt', 'gif', 'xml', 'csv', 'gz', 'png', 'swf', 'pps', 'rtf', 'sql', 'java', 'pptx', 'docx', 'tex', 'bmp', 'xlsx', 'zip',]
+
 BASE_URL = 'https://domex.nps.edu/corp/files/govdocs1/'
 #MIN_FILE_SIZE = 512 * 100
 #MAX_FILE_SIZE =  512 * 500
