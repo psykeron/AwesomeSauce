@@ -1,0 +1,52 @@
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: report.aux
+The style file: elsarticle-num.bst
+Database file #1: report.bib
+Warning--empty pages in Garfinkel07
+Warning--empty pages in Axelsson10
+Warning--empty pages in Conti10
+Warning--empty pages in Li10
+Warning--empty pages in Garfinkel09
+Warning--empty pages in Calhoun08
+You've used 16 entries,
+            2937 wiz_defined-function locations,
+            778 strings with 7807 characters,
+and the built_in function-call counts, 4919 in all, are:
+= -- 446
+> -- 130
+< -- 3
++ -- 54
+- -- 38
+* -- 296
+:= -- 640
+add.period$ -- 16
+call.type$ -- 16
+change.case$ -- 18
+chr.to.int$ -- 0
+cite$ -- 22
+duplicate$ -- 174
+empty$ -- 630
+format.name$ -- 47
+if$ -- 1309
+int.to.chr$ -- 0
+int.to.str$ -- 16
+missing$ -- 15
+newline$ -- 56
+num.names$ -- 16
+pop$ -- 126
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 348
+stack$ -- 0
+substring$ -- 265
+swap$ -- 32
+text.length$ -- 3
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 6
+while$ -- 38
+width$ -- 18
+write$ -- 140
+(There were 6 warnings)

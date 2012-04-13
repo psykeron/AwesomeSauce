@@ -1,0 +1,83 @@
+\begin{thebibliography}{10}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \def\href#1#2{#2} \def\path#1{#1}\fi
+
+\bibitem{Garfinkel07}
+S.~Garfinkel, Carving contiguous and fragmented files with object validation,
+  in: Proceedings of the Digital Forensics Research Conference (DFRWS) 2007,
+  2007.
+
+\bibitem{Axelsson10}
+S.~Axelsson, The normalized compression distance as a file fragment classifier,
+  in: Proceedings of the Digital Forensics Research Conference (DFRWS) 2010,
+  2010.
+
+\bibitem{Conti10}
+G.~Conti, S.~Bratus, B.~Sangster, R.~Ragsdale, M.~Supan, A.~Lichtenberg,
+  R.~Perez-Alemany, A.~Shubina, Automated mapping of large binary objects using
+  primitive fragment type classification, in: Proceedings of the Digital
+  Forensics Research Conference (DFRWS) 2010, 2010.
+
+\bibitem{Li10}
+Q.~Li, A.~Ong, P.~Suganthan, V.~Thing, A novel support vector machine approach
+  to high entropy data fragment classification, in: Proceedings of the South
+  African Information Security Multi-Conference (SAISMC 2010), 2010.
+
+\bibitem{Veenman07}
+C.~J. Veenman, Statistical disk cluster classification for file carving, in:
+  Proceedings of the IEEE 3rd International Symposium on Information Assurance
+  and Security, IEEE Computer Society, 2007, pp. 393--398.
+
+\bibitem{Li05}
+W.-J. Li, K.~Wang, S.~Stolfo, B.~Herzog, Fileprints: Identifying file types by
+  n-gram analysis, in: Proceedings of the 2005 IEEE Workshop on Information
+  Assurance and Security, 2005, pp. 64--71.
+
+\bibitem{Stolfo05}
+S.~Stolfo, K.~Wang, W.-J. Li, Fileprint analysis for malware detection, Tech.
+  rep., Columbia Univesrity (June 2005).
+
+\bibitem{CC01a}
+C.-C. Chang, C.-J. Lin, {LIBSVM}: A library for support vector machines, ACM
+  Transactions on Intelligent Systems and Technology 2 (2011) 27:1--27:27,
+  software available at \url{http://www.csie.ntu.edu.tw/~cjlin/libsvm}.
+
+\bibitem{Garfinkel09}
+S.~Garfinkel, P.~Farrell, V.~Roussev, G.~Dinolt, Bringing science to digital
+  forensics with standardized forensic corpora, in: Proceedings of the Digital
+  Forensics Research Conference (DFRWS) 2009, 2009.
+
+\bibitem{Calhoun08}
+W.~Calhoun, D.~Coles, Predicting the types of file fragments, in: Proceedings
+  of the Digital Forensics Research Conference (DFRWS) 2008, 2008.
+
+\bibitem{Fisher36}
+R.~A. Fisher, The use of multiple measurements in taxonomic problems, Annals of
+  Eugenics 7 (1936) 179--188.
+
+\bibitem{Shannon48}
+C.~Shannon, A mathematical theory of communication, Bell System Technical
+  Journal 27~(3, 4) (1948) 379--423, 623--656.
+
+\bibitem{Kolmogorov65}
+A.~N. Kolmogorov, Three approaches to the quantitative definition of
+  information, Problems of Information Transmission 1 (1965) 1--11.
+
+\bibitem{Lempel76}
+A.~Lempel, J.~Ziv, On the complexity of finite sequences, IEEE Transactions on
+  Information Theory 22 (1976) 75--81.
+
+\bibitem{Seward01}
+J.~Seward, Space-time tradeoffs in the inverse b-w transform, in: Proceedings
+  of the Data Compression Conference 2001, IEEE Computer Society, 2001, pp.
+  439--448.
+
+\bibitem{Freund97}
+Y.~Freund, R.~Schapire, A decision-theoretic generalization of on-line learning
+  and an application to boosting, Journal of Computer and System Sciences
+  55~(1) (1997) 119--139.
+
+\end{thebibliography}
