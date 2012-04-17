@@ -150,10 +150,15 @@ if __name__ == '__main__':
         help="String to be added to the name of the output vector file")
     parser.add_option("-n", "--limit", dest="limit", type=int, default=0,
         help="Limit to the number of fragments to take of each type. Default: 0=unlimited.")
+
+    parser.add_option("--omit", dest="omit", type=int, default=-1,
+        help="Omit the feature with the given index (should be from 0-6). Default:-1 -> don't omit anything")
     
     (options, args) = parser.parse_args()
     
     features = [unigram_counts, contiguity, mean_byte_value, longest_streak, compressed_length, hamming_weight, entropy_and_bigram_counts]
+    if options.omit != -1:
+        features = features[:features.omit] + features[features.omit+1:]
     
     output_fname = os.path.join(options.output_dir, 'vector' + options.label + '.svm')
     out = open(output_fname, 'w')
